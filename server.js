@@ -18,6 +18,7 @@ require("./server/config/mongoose.config");
 
 
 require("./server/routes/user.routes")(app);
+require("./server/routes/post.routes")(app);
 
 
 

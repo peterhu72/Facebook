@@ -4,9 +4,9 @@ import Login from './Login';
 
 const SignIn = () => {
     return (
-        <div>
-            <h1>Sign in Below</h1>
-            <div className='row'>
+        <div className="bg-image login-bg">
+            
+            <div className='signin-box'>
                 <div className='col'>
                     <Registration></Registration>
                 </div>
@@ -14,6 +14,7 @@ const SignIn = () => {
                     <Login></Login>
                 </div>
             </div>
+            
         </div>
     );
 };

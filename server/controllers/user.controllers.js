@@ -1,10 +1,12 @@
 const User = require("../models/user.models")
+const Post = require("../models/post.models")
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
 
 class UserController{
     getAllUsers = (req, res) => {
         User.find()
+            .populate("posts")
             .then(allUsers =>{
                 res.json({results: allUsers})
             })
@@ -49,7 +51,7 @@ class UserController{
     
             if(user === null) {
                 // email not found in users collection
-                return res.json({error: "User not found. Who YOU?!"})
+                return res.json({error: "User not found."})
             }
         
             // if we made it this far, we found a user with this email address
@@ -85,6 +87,7 @@ class UserController{
         const decodedJWT = jwt.decode(req.cookies.usertoken, {complete:true})
         // decodedJWT.payload.id
         User.findOne({_id: decodedJWT.payload.id })
+            .populate("posts")
             .then(foundUser=>{
                 res.json({results: foundUser})
             })
@@ -93,6 +96,85 @@ class UserController{
             })
     }
 
+    deleteUser = (req, res) => {
+        User.deleteOne({_id: req.params.id})
+            .then(user =>{
+                res.json({results: user})
+            })
+            .catch(err =>{
+                res.json(err)
+            })
+    }
+
+    findOneUser = (req, res) => {
+        User.findOne({_id: req.params.id})
+            .populate("posts")
+            .then(user =>{
+                res.json({results: user})
+            })
+            .catch(err =>{
+                res.json(err)
+            })
+    }
+
+    updateOneUser = (req, res) => {
+        User.findOneAndUpdate(
+            {_id: req.params.id},
+            req.body,
+            { new: true, runValidators: true}
+        )
+            .then(updatePost =>{
+                res.json({results: updatePost})
+            })
+            .catch(err => {
+                res.json(err)
+            })
+    }
+
+    createNewPost = (req, res) => {
+        Post.create(req.body)
+            .then(docPost => {
+                User.findByIdAndUpdate(
+                    {_id: req.params.id}, 
+                    { 
+                        $push: { 
+                            posts: {
+                                _id: docPost._id
+                            }
+                        } 
+                    },
+                    { new: true, useFindAndModify: false }
+                )
+                    .then(updatedUser => {
+                        res.json({result: updatedUser})
+                    })
+                    .catch (err => {
+                        res.json(err)
+                    })
+        })
+        .catch (err =>{
+                res.json(err)
+        });
+    }
+
+    addFriend = (req, res) => {
+        User.updateOne(
+            {_id: req.params.id},
+            {
+                $push : {
+                    friends: {
+                        _id: req.params.friend
+                    }
+                }
+            }
+        )
+            .then(newFriend => {
+                res.json(newFriend)
+            })
+            .catch(err => {
+                res.json(err)
+            })
+    }
 
 }
 

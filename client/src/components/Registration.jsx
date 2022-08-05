@@ -17,7 +17,7 @@ const Registration = () => {
     const register = (e) => {
         e.preventDefault()
         let form = {firstName,lastName,email,password,confirm}
-        axios.post("http://localhost:8000/api/users/register", form)
+        axios.post("http://localhost:8000/api/users/register", form, {withCredentials: true})
             .then(res => {
                 console.log(res)
                 if (res.data.errors){
@@ -32,7 +32,7 @@ const Registration = () => {
     }
 
     return (
-        <div>
+        <div className='register-card'>
             <h2>Register</h2>
             <form onSubmit={register}>
                 <div className="form-group">

@@ -30,7 +30,7 @@ const Login = () => {
     }
 
     return (
-        <div>
+        <div className='register-card'>
             <h2>Login</h2>
             <form onSubmit={login}>
                 <div className="form-group">

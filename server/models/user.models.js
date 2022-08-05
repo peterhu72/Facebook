@@ -22,7 +22,35 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: [true, "Password is required"],
         minLength: [8, 'Password must be at least 8 characters']
-    }
+    },
+    posts: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Post"
+        }
+    ],
+    profilePicture: {
+        type: String,
+        default: ""
+    },
+    coverPicture: {
+        type: String,
+        default: ""
+    },
+    birthday: {
+        type: Date,
+        default: "11/11/1111"
+    },
+    location: {
+        type: String,
+        default: ""
+    },
+    friends: [
+        {
+            type: String
+        }
+    ]
+
 }, {timestamps: true}) 
 
 UserSchema.virtual('confirm')
